@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hide_menu_user_admin,hide.menu.user.admin,model_res_users,base.group_system,1,1,1,1
+access_hide_menu_user_manager,hide.menu.user.manager,model_res_users,base.group_erp_manager,1,1,1,0
