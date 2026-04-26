@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Profile Form View -->
+    <record id="view_kts_menu_profile_form" model="ir.ui.view">
+        <field name="name">kts.menu.profile.form</field>
+        <field name="model">kts.menu.profile</field>
+        <field name="arch" type="xml">
+            <form string="Menu Profile">
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="e.g. Sales Person, Accountant..."/>
+                    </group>
+                    <notebook>
+                        <page string="Allowed Menus" name="allowed_menus">
+                            <div class="alert alert-info" role="alert">
+                                <strong>ℹ️ Note:</strong>
+                                Only the menus selected here will be <strong>visible</strong>
+                                to users assigned this profile. Leave empty to show all menus.
+                            </div>
+                            <field name="menu_ids"
+                                   widget="many2many"
+                                   options="{'no_create': True}">
+                                <list>
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Users" name="users">
+                            <field name="user_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="login"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Profile List View -->
+    <record id="view_kts_menu_profile_list" model="ir.ui.view">
+        <field name="name">kts.menu.profile.list</field>
+        <field name="model">kts.menu.profile</field>
+        <field name="arch" type="xml">
+            <list string="Menu Profiles">
+                <field name="name"/>
+                <field name="user_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_kts_menu_profile" model="ir.actions.act_window">
+        <field name="name">Menu Profiles</field>
+        <field name="res_model">kts.menu.profile</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu under Settings > Technical -->
+    <menuitem
+        id="menu_kts_menu_profile"
+        name="Menu Profiles"
+        parent="base.menu_administration"
+        action="action_kts_menu_profile"
+        sequence="100"/>
+
+</odoo>

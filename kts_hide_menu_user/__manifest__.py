@@ -1,6 +1,6 @@
 {
     'name': 'Hide Menu User Wise',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Tools',
     'summary': 'Hide specific menus for specific users',
     'description': """
@@ -14,10 +14,13 @@
         - No restart required — changes are immediate
     """,
     'author': 'Irshad K T',
+    'website':'www.linkedin.com/in/irshadkt',
+    'images':'static/description/banner.gif',
     'depends': ['base', 'web'],
     'data': [
         'security/ir.model.access.csv',
         'views/res_users_views.xml',
+        'views/menu_profile_views.xml',
     ],
     'installable': True,
     'application': False,
