@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hide Menu for Users — Odoo Module</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --odoo: #017E84;
+    --odoo-dark: #015f64;
+    --odoo-light: #e6f7f8;
+    --accent: #F4A629;
+    --accent2: #E05C2A;
+    --dark: #0d1117;
+    --mid: #1e2936;
+    --text: #e8edf2;
+    --muted: #7a8fa6;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 100px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(1,126,132,0.45) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(244,166,41,0.15) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(1,126,132,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(1,126,132,0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 30%, transparent 100%);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(1,126,132,0.15);
+    border: 1px solid rgba(1,126,132,0.4);
+    color: #4dd6db;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    position: relative;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .badge-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #4dd6db;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    position: relative;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--odoo);
+    position: relative;
+  }
+
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -4px;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--odoo), var(--accent));
+    border-radius: 2px;
+  }
+
+  .hero-sub {
+    margin-top: 20px;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    position: relative;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 32px;
+    position: relative;
+    animation: fadeDown 0.7s 0.3s ease both;
+  }
+
+  .tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tag strong { color: var(--text); }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── WAVE DIVIDER ── */
+  .wave {
+    display: block;
+    width: 100%;
+    margin-top: -2px;
+    color: #111820;
+  }
+
+  /* ── STEPS SECTION ── */
+  .steps-section {
+    background: #111820;
+    padding: 72px 24px 80px;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--odoo);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 56px;
+    color: var(--text);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .step {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 36px 28px 32px;
+    border-radius: 16px;
+    transition: border-color 0.3s, transform 0.3s;
+    overflow: hidden;
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--odoo), var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .step:hover { border-color: rgba(1,126,132,0.4); transform: translateY(-4px); }
+  .step:hover::before { opacity: 1; }
+
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: rgba(1,126,132,0.12);
+    line-height: 1;
+    margin-bottom: 16px;
+    transition: color 0.3s;
+  }
+
+  .step:hover .step-num { color: rgba(1,126,132,0.25); }
+
+  .step-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(1,126,132,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+    transition: background 0.3s;
+  }
+
+  .step:hover .step-icon { background: rgba(1,126,132,0.22); }
+
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .step p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── SCREENSHOT BLOCKS ── */
+  .screenshots-section {
+    background: var(--dark);
+    padding: 72px 24px 80px;
+  }
+
+  .screenshot-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    max-width: 960px;
+    margin: 0 auto 72px;
+  }
+
+  .screenshot-block.reverse { direction: rtl; }
+  .screenshot-block.reverse > * { direction: ltr; }
+
+  .screenshot-info { }
+
+  .screenshot-info .step-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .screenshot-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+
+  .screenshot-info p {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .screenshot-frame {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--mid);
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .screenshot-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(1,126,132,0.08), transparent 60%);
+  }
+
+  .screenshot-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 32px;
+    text-align: center;
+  }
+
+  .img-placeholder .ph-icon {
+    font-size: 2.5rem;
+    opacity: 0.4;
+  }
+
+  .img-placeholder span { opacity: 0.5; }
+
+  /* ── FEATURES ── */
+  .features-section {
+    background: #111820;
+    padding: 72px 24px 80px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(1,126,132,0.35);
+    transform: translateY(-3px);
+  }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .feature-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .feature-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--odoo);
+    margin-bottom: 10px;
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 6px;
+  }
+
+  .footer a {
+    color: var(--odoo);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .footer a:hover { color: var(--accent); }
+
+  .footer-divider {
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--odoo), var(--accent));
+    border-radius: 2px;
+    margin: 20px auto;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .screenshot-block,
+    .screenshot-block.reverse {
+      grid-template-columns: 1fr;
+      direction: ltr;
+    }
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="badge"><span class="badge-dot"></span> Odoo 19 Compatible</div>
+  <h1>Hide Menus<br/>for <em>Specific Users</em></h1>
+  <p class="hero-sub">
+    Control exactly what each user sees — create role-based menu profiles
+    and assign them in seconds. No more cluttered interfaces.
+  </p>
+  <div class="hero-tags">
+    <span class="tag"><strong>Odoo 19</strong></span>
+    <span class="tag">Profile Based</span>
+    <span class="tag">Per-User Control</span>
+    <span class="tag">No Code</span>
+    <span class="tag">Admin Friendly</span>
+  </div>
+</section>
+
+<svg class="wave" viewBox="0 0 1440 48" preserveAspectRatio="none" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0,0 C360,48 1080,48 1440,0 L1440,48 L0,48 Z"/>
+</svg>
+
+<!-- QUICK STEPS -->
+<section class="steps-section">
+  <p class="section-label">How It Works</p>
+  <h2 class="section-title">Up and running in 3 steps</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">🔍</div>
+      <h3>Install the Module</h3>
+      <p>Search for <strong>KTS Hide Menu</strong> in the Odoo Apps store and install it in one click.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🗂️</div>
+      <h3>Create a Profile</h3>
+      <p>Go to Settings → Menu Profiles. Create a profile like "Sales Person" and pick which menus they can see.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">👤</div>
+      <h3>Assign to User</h3>
+      <p>Open any user → Menu Access tab → assign the profile. Changes take effect on their next login.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">✅</div>
+      <h3>Clean Interface</h3>
+      <p>The user sees only what they need. Admins always retain full access regardless of any profile.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots-section">
+  <p class="section-label">Walkthrough</p>
+  <h2 class="section-title" style="text-align:center;font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;margin-bottom:56px;">See it in action</h2>
+
+  <div class="screenshot-block">
+    <div class="screenshot-info">
+      <p class="step-label">Step 1 — Install</p>
+      <h3>Search & Install from Apps</h3>
+      <p>Find <strong>KTS Hide Menu for Users</strong> in the Odoo App store. One click to install — no configuration files, no developer mode required.</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="module_name.png" alt="Install module screenshot" onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='flex'"/>
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼️</span>
+        <span>module_name.png</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot-block reverse">
+    <div class="screenshot-info">
+      <p class="step-label">Step 2 — Profile</p>
+      <h3>Create a Menu Profile</h3>
+      <p>Define role-based profiles like "Sales Person" or "Warehouse Staff". Select only the menus that role needs — parent menus are included automatically.</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="menu_profile.png" alt="Create profile screenshot" onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='flex'"/>
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼️</span>
+        <span>menu_profile.png</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot-block">
+    <div class="screenshot-info">
+      <p class="step-label">Step 3 — Assign</p>
+      <h3>Assign Profile to User</h3>
+      <p>Open the user form, go to the <strong>Menu Access</strong> tab and select their profile. One field — that's all it takes.</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="user_tab.png" alt="User tab screenshot" onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='flex'"/>
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼️</span>
+        <span>user_tab.png</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="screenshot-block reverse">
+    <div class="screenshot-info">
+      <p class="step-label">Result</p>
+      <h3>Clean, Focused Interface</h3>
+      <p>Users see only the apps and menus relevant to their role. No confusion, no accidental access — just a clean, professional experience.</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="result_icon.png" alt="Result screenshot" onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='flex'"/>
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼️</span>
+        <span>result_icon.png</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Everything you need</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🛡️</span>
+      <h4>Admin Always Safe</h4>
+      <p>Administrators bypass all restrictions and always see the full menu tree, no matter what.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h4>Instant Effect</h4>
+      <p>Profile changes reflect on the user's next page refresh — no server restart needed.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">♻️</span>
+      <h4>Reusable Profiles</h4>
+      <p>Create a profile once, assign it to hundreds of users. Update the profile — all users update instantly.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌳</span>
+      <h4>Smart Parent Inclusion</h4>
+      <p>Just pick the leaf menus you want. Parent and root menus are included automatically.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎛️</span>
+      <h4>Manual Override</h4>
+      <p>Need to hide just one menu for one user? Use the per-user manual hide field alongside profiles.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🧩</span>
+      <h4>No Core Changes</h4>
+      <p>Clean inheritance — no core Odoo files modified. Safe to install, upgrade, and uninstall.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">KTS Hide Menu for Users</div>
+  <div class="footer-divider"></div>
+  <p>This is an actively maintained module. Feedback and contributions are welcome.</p>
+  <p style="margin-top:8px;">
+    For support or issues, reach out at
+    <a href="mailto:contact.ktcs@gmail.com">contact.ktcs@gmail.com</a>
+  </p>
+</footer>
+
+</body>
+</html>
