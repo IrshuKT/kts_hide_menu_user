@@ -15,7 +15,7 @@
     """,
     'author': 'Irshad K T',
     'website':'www.linkedin.com/in/irshadkt',
-    'images':['static/description/banner.gif]',
+    'images':['static/description/banner.gif'],
     'depends': ['base', 'web'],
     'data': [
         'security/ir.model.access.csv',
